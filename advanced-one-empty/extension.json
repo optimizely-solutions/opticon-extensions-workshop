@@ -1,0 +1,21 @@
+{
+    "plugin_type": "widget",
+    "name": "Advanced Opticon Workshop",
+    "edit_page_url": "https://www.atticandbutton.us/products/khaki-showerproof-rubberised-parka",
+    "form_schema": [
+      {
+        "default_value": ".product-single__add-to-cart",
+        "field_type": "selector",
+        "name": "selector",
+        "label": "Selector",
+        "options": null
+      }
+    ],
+    "description": "",
+    "options": {
+      "html": "<div id=\"optimizely-extension-{{ extension.$instance }}\" class=\"advanced-opticon-workshop\">\n  Perfect for today's temperature of <br>\n  {{ weather.temperature }} °F in {{ weather.city }}\n</div>",
+      "css": ".advanced-opticon-workshop {\n  background-color: #fff575;\n  border-bottom: 1px solid #e0d769;\n  color: #555;\n  padding: 10px;\n\tfont-weight: bold;\n  text-align: center;\n  font-size: 20px;\n}",
+      "apply_js": "var opticonWorkshop = {\n    weather: {},\n    makeRequest: function(city) {\n        var request = new XMLHttpRequest();\n\n        // Add URL endpoint to get weather data\n        request.open('GET', '', true);\n\n        request.onload = function() {\n            if (request.status >= 200 && request.status < 400) {\n                // Success!\n                var data = JSON.parse(request.responseText);\n                // Add data to weather object\n\n                opticonWorkshop.addChanges(extension.selector);\n            };\n        };\n          \n        request.send();\n    }, \n    addChanges: function(selector) {\n        utils.waitForElement(selector)\n        .then(function(elem) {\n            // Prepend the extension html to the body\n            var html = extension.$render({\n                extension: extension\n                // Add weather data to HTML rendering\n            });\n            elem.insertAdjacentHTML('afterend', html);\n        });\n    }\n};\n\nvar utils = optimizely.get('utils');\n\n// START HERE\n// Check if Optimizely has geolocation data available \n// if so, use this information to trigger a request\n",
+      "undo_js": "var extensionElement = document.getElementById('optimizely-extension-' + extension.$instance);\nif (extensionElement) {\n  extensionElement.parentElement.removeChild(extensionElement);\n}\n"
+    }
+  }

@@ -1,0 +1,21 @@
+{
+  "plugin_type": "widget",
+  "name": "Advanced Opticon Workshop",
+  "edit_page_url": "https://www.atticandbutton.us/products/khaki-showerproof-rubberised-parka",
+  "form_schema": [
+    {
+      "default_value": ".product-single__add-to-cart",
+      "field_type": "selector",
+      "name": "selector",
+      "label": "Selector",
+      "options": null
+    }
+  ],
+  "description": "",
+  "options": {
+    "apply_js": "var opticonWorkshop = {\n    weather: {},\n  \tgetCategory: function() {\n      return document.getElementsByClassName('subcat')[0].innerText;\n    },\n    makeRequest: function(city) {\n        var request = new XMLHttpRequest();\n        request.open('GET', 'https://api.openweathermap.org/data/2.5/weather?q='+ city +',us&APPID=635dd60132394e6d05519fad6fc47062&units=imperial', true);\n\n        request.onload = function() {\n            if (request.status >= 200 && request.status < 400) {\n                // Success!\n                var data = JSON.parse(request.responseText);\n                opticonWorkshop.weather.temperature =  Math.floor(data.main.temp);\n                opticonWorkshop.weather.city = data.name;\n\n                opticonWorkshop.addChanges(extension.selector);\n            };\n        };\n          \n        request.send();\n    }, \n    addChanges: function(selector) {\n        utils.waitForElement(selector)\n        .then(function(elem) {\n            // Prepend the extension html to the body\n          \tvar category = opticonWorkshop.getCategory();\n            var html = extension.$render({\n                extension: extension,\n                weather: opticonWorkshop.weather,\n            });\n            elem.insertAdjacentHTML('afterend', html);\n        });\n    }\n};\n\nvar utils = optimizely.get('utils');\nif(optimizely.get('visitor') !== undefined) {\n  var locationObject = optimizely.get('visitor').location || undefined;\n  if(locationObject) {\n    opticonWorkshop.makeRequest(location.city);\n  }  \n}\n\n",
+    "html": "<div id=\"optimizely-extension-{{ extension.$instance }}\" class=\"advanced-opticon-workshop\">\n  Perfect for today's temperature of <br>\n  {{ weather.temperature }} °F in {{ weather.city }}\n</div>",
+    "css": ".advanced-opticon-workshop {\n  background-color: #fff575;\n  border-bottom: 1px solid #e0d769;\n  color: #555;\n  padding: 10px;\n\tfont-weight: bold;\n  text-align: center;\n  font-size: 20px;\n}",
+    "undo_js": "var extensionElement = document.getElementById('optimizely-extension-' + extension.$instance);\nif (extensionElement) {\n  extensionElement.parentElement.removeChild(extensionElement);\n}\n"
+  }
+}
