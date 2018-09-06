@@ -12,3 +12,4 @@
 ## Start filling in the blanks
 ## Turn extension ON
 ## Create an experiment using this extension
+## Make sure the Audience condition using a Location condition
