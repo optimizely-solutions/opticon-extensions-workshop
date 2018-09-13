@@ -3,15 +3,14 @@ var opticonWorkshop = {
     weather: {},
     makeRequest: function(city) {
         var request = new XMLHttpRequest();
-      	var city = encodeURI(extension.city).toLowerCase();
-      	var url = 'https://api.openweathermap.org/data/2.5/weather?q='+ city +'&type=like&APPID='+ opticonWorkshop.apiKey +'&units=imperial';
+      	var url = 'https://api.openweathermap.org/data/2.5/weather?q='+ city +',us&type=like&APPID='+ opticonWorkshop.apiKey +'&units=imperial';
         request.open('GET', url, true);
 
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 // Success!
                 var data = JSON.parse(request.responseText);
-                opticonWorkshop.weather.temperature =  Math.floor(data.main.temp);
+                opticonWorkshop.weather.temperature =  Math.floor(data.main.temp_max);
                 opticonWorkshop.weather.city = data.name;
 
                 opticonWorkshop.addChanges(extension.selector);
@@ -39,10 +38,10 @@ var opticonWorkshop = {
     }
 };
 
-if(optimizely.get('visitor') !== undefined) {
-  var locationObject = optimizely.get('visitor').location || undefined;
-  if(locationObject) {
-    opticonWorkshop.makeRequest(locationObject.city);
-  }  
-}
+
+var city = encodeURI(extension.city).toLowerCase();
+if(city) {
+ opticonWorkshop.makeRequest(city);
+}  
+
 
